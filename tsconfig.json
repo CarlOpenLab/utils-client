@@ -29,5 +29,5 @@
     }
   },
 
-  "exclude": ["node_modules/**/*", "rollup.config.js", "types/**/*", "playground/**/*"]
+  "exclude": ["node_modules/**/*", "types/**/*", "playground/**/*", "docs/**/*", "doc_build/**/*"]
 }

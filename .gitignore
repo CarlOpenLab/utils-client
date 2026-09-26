@@ -4,4 +4,7 @@ coverage/**/*
 publish.sh
 
 dist/
+doc_build/
+docs/api/
+.rspress/
 .vscode

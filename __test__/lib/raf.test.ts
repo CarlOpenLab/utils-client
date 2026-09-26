@@ -1,25 +1,26 @@
+import { rs } from '@rstest/core'
 import { raf } from '@/lib/raf'
 
 describe('raf timing accuracy', () => {
   beforeEach(() => {
-    jest.useFakeTimers()
-    jest.spyOn(globalThis, 'requestAnimationFrame').mockImplementation((cb) => {
+    rs.useFakeTimers()
+    rs.spyOn(globalThis, 'requestAnimationFrame').mockImplementation((cb) => {
       return setTimeout(() => cb(performance.now()), 16) as unknown as number
     })
-    jest.spyOn(globalThis, 'cancelAnimationFrame').mockImplementation((id) => {
+    rs.spyOn(globalThis, 'cancelAnimationFrame').mockImplementation((id) => {
       clearTimeout(id)
     })
   })
 
   afterEach(() => {
-    jest.useRealTimers()
-    jest.restoreAllMocks()
+    rs.useRealTimers()
+    rs.restoreAllMocks()
   })
 
   it('should call the callback roughly every 100ms', async () => {
     const callTimestamps: number[] = []
 
-    const callback = jest.fn().mockImplementation(() => {
+    const callback = rs.fn().mockImplementation(() => {
       callTimestamps.push(Date.now())
       return Promise.resolve()
     })
@@ -27,7 +28,7 @@ describe('raf timing accuracy', () => {
     raf(callback, 100)
 
     for (let i = 0; i < 1000; i += 16) {
-      jest.advanceTimersByTime(16)
+      rs.advanceTimersByTime(16)
       await Promise.resolve()
     }
 

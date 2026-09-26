@@ -1,3 +1,4 @@
+import { rs } from '@rstest/core'
 import { getByText } from '@testing-library/dom'
 
 import {
@@ -87,7 +88,7 @@ describe('get element style attribute value', () => {
   })
 
   it('should return a null when get invalid element or style', () => {
-    // @ts-ignore
+    // @ts-expect-error pass null intentionally
     expect(getStyles(null, 'float')).toBeNull();
 
     expect(getStyles(document.createElement('div'), '')).toBeNull()
@@ -140,7 +141,7 @@ describe('getPadding function', () => {
 
 
 describe('isHidden function', () => {
-  let _get = Range.prototype.getBoundingClientRect
+  const _get = Range.prototype.getBoundingClientRect
   beforeEach(() => {
     Range.prototype.getBoundingClientRect = () => {
       return {
@@ -173,7 +174,7 @@ describe('isHidden function', () => {
     mockElement.style.width = '100px';
     mockElement.style.height = '50px';
 
-    jest.spyOn(mockElement, 'getBoundingClientRect').mockReturnValue({
+    rs.spyOn(mockElement, 'getBoundingClientRect').mockReturnValue({
       width: 0,
       height: 50
     } as DOMRect);

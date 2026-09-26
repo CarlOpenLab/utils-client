@@ -1,0 +1,53 @@
+name: Doc
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'LICENSE'
+      - '.github/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        run: |
+          npm install -g corepack@latest --force
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '23'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build docs
+        run: pnpm docs:build
+
+      - name: Deploy to docs branch
+        uses: JamesIves/github-pages-deploy-action@v4.6.3
+        with:
+          branch: docs
+          folder: doc_build
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target-folder: ./
+          single-commit: true
+          dotfiles: true
+          clean: true
+          commit-message: 'docs: update documentation [skip ci]'

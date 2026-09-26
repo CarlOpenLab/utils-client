@@ -12,6 +12,10 @@
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@cc-heart/utils-client.svg" alt="license" /></a>
 </p>
 
+<p align="center">
+  <a href="https://carlopenlab.github.io/utils-client/">📖 Docs</a>
+</p>
+
 > **The utils family** · core: [`@cc-heart/utils`](https://github.com/CarlOpenLab/utils) · Node.js runtime: [`@cc-heart/utils-service`](https://github.com/CarlOpenLab/utils-service) · browser: [`@cc-heart/utils-client`](https://github.com/CarlOpenLab/utils-client)
 
 ## Features

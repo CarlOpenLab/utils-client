@@ -35,9 +35,8 @@ function getBody(params: Record<string, unknown>) {
     body = JSON.stringify(params)
   } catch (error) {
     console.error('params transform error:', error)
-  } finally {
-    return body
   }
+  return body
 }
 
 export function getRequestBody(params: params) {
@@ -62,11 +61,12 @@ export async function fetchRequest<T>(
   // request interceptor
   const { requestInterceptor, responseInterceptor, errorInterceptor } =
     interceptor
-  requestInterceptor &&
+  if (requestInterceptor) {
     requestInterceptor.reduce((value, fn) => {
       fn(value)
       return value
     }, data)
+  }
   return fetch(url, data)
     .then((response) => {
       const ContentType = response.headers.get('content-type') || ''

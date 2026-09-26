@@ -64,7 +64,7 @@ export class Request<Response> {
     } else if ([requestType.POST, requestType.PUT].includes(method)) {
       requestInit = { ...requestInit, body: getRequestBody(body || {}) }
     }
-    interceptor = !!interceptor
+    interceptor = interceptor
       ? this.mergeInterceptor(interceptor)
       : this.interceptor
     return { data: request(path, method, requestInit, interceptor), abort }
