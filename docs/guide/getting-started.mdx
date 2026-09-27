@@ -1,0 +1,168 @@
+# Getting Started
+
+`@cc-heart/utils-client` is a collection of tools for the browser.
+
+## Install
+
+```shell
+npm install @cc-heart/utils-client
+# or
+pnpm add @cc-heart/utils-client
+```
+
+## DOM helpers
+
+```ts
+import { addClassName, removeClassName, classNames, addStyles, isHidden } from '@cc-heart/utils-client'
+
+addClassName(el, 'active', 'visible')
+removeClassName(el, 'hidden')
+addStyles(el, { color: 'red', fontSize: '14px' })
+
+const cls = classNames('btn', { 'btn--active': isActive }, ['extra'])
+```
+
+## Clipboard
+
+```ts
+import { copyTextToClipboard } from '@cc-heart/utils-client'
+
+copyTextToClipboard('hello world') // falls back when Clipboard API is unavailable
+```
+
+## rAF scheduler
+
+```ts
+import { raf } from '@cc-heart/utils-client'
+
+const stop = raf(() => {
+  // runs at most every `rate` frames
+}, 2)
+
+stop() // cancel
+```
+
+## Request
+
+```ts
+import { createFetchRequest } from '@cc-heart/utils-client'
+
+const request = createFetchRequest()
+// ...
+```
+
+## CSS namespace
+
+```ts
+import { generateCssNamespaceFn } from '@cc-heart/utils-client'
+
+const ns = generateCssNamespaceFn('cc')('button')
+ns.b() // 'cc-button'
+ns.e('icon') // 'cc-button__icon'
+ns.m('active') // 'cc-button--active'
+```
+
+## SCSS Usage
+
+Create an overwrite file (e.g. `overwrite.scss`), and write the following content:
+
+```scss
+@forward '@cc-heart/utils-client/scss/variable.scss' with (
+  $namespace: 'cc'
+);
+```
+
+Create a new scss file (e.g. `lib.scss`), and write the following content:
+
+```scss
+@use './overwrite.scss' as *;
+
+@forward '@cc-heart/utils-client/scss/function.scss';
+@forward '@cc-heart/utils-client/scss/mixins.scss';
+```
+
+## API Reference
+
+See the auto-generated [API documentation](/api/).
+
+## Try it online
+
+DOM helpers + CSS namespace, live:
+
+```tsx playground
+import { useRef, useState } from 'react'
+import {
+  addClassName,
+  removeClassName,
+  addStyles,
+  removeStyles,
+  classNames,
+  generateCssNamespaceFn,
+} from '@cc-heart/utils-client'
+
+const ns = generateCssNamespaceFn('cc')('box')
+
+export default function App() {
+  const boxRef = useRef(null)
+  const [active, setActive] = useState(false)
+
+  const toggle = () => {
+    const el = boxRef.current
+    if (!el) return
+    if (active) {
+      removeClassName(el, 'demo-active')
+      removeStyles(el, ['background', 'transform'])
+    } else {
+      addClassName(el, 'demo-active')
+      addStyles(el, { background: '#95e8c8', transform: 'rotate(3deg)' })
+    }
+    setActive(!active)
+  }
+
+  return (
+    <div style={{ fontFamily: 'monospace' }}>
+      <div
+        ref={boxRef}
+        style={{ padding: 24, border: '1px solid #888', marginBottom: 12 }}
+      >
+        {ns.b()} {/* cc-box */}
+      </div>
+      <button onClick={toggle}>toggle via addClassName / addStyles</button>
+      <p>ns.e('item'): {ns.e('item')}</p>
+      <p>classNames demo: {classNames('btn', { 'btn--active': active })}</p>
+    </div>
+  )
+}
+```
+
+Copy to clipboard:
+
+```tsx playground
+import { useState } from 'react'
+import { copyTextToClipboard } from '@cc-heart/utils-client'
+
+export default function App() {
+  const [text, setText] = useState('hello from utils-client')
+  const [copied, setCopied] = useState(false)
+
+  return (
+    <div style={{ fontFamily: 'monospace' }}>
+      <input
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        style={{ width: 260 }}
+      />{' '}
+      <button
+        onClick={() => {
+          copyTextToClipboard(text)
+          setCopied(true)
+          setTimeout(() => setCopied(false), 1500)
+        }}
+      >
+        copy
+      </button>
+      {copied && <p>✅ copied — try pasting somewhere</p>}
+    </div>
+  )
+}
+```

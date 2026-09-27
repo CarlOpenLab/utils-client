@@ -84,8 +84,9 @@ const request = createFetchRequest()
 ```ts
 import { generateCssNamespaceFn } from '@cc-heart/utils-client'
 
-const ns = generateCssNamespaceFn('cc')
-ns.b('button') // 'cc-button'
+const ns = generateCssNamespaceFn('cc')('button')
+ns.b() // 'cc-button'
+ns.e('icon') // 'cc-button__icon'
 ```
 
 ### SCSS Usage

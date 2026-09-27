@@ -1,5 +1,6 @@
 import { defineConfig } from '@rspress/core'
 import { pluginTypeDoc } from '@rspress/plugin-typedoc'
+import { pluginPlayground } from '@rspress/plugin-playground'
 
 export default defineConfig({
   root: 'docs',
@@ -19,6 +20,10 @@ export default defineConfig({
     ],
   },
   plugins: [
+    pluginPlayground({
+      include: ['@cc-heart/utils-client'],
+      defaultDirection: 'horizontal',
+    }),
     pluginTypeDoc({
       entryPoints: ['index.ts'],
     }),
