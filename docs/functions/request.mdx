@@ -1,0 +1,91 @@
+# Request
+
+A small wrapper around `fetch` with interceptors and abort support.
+
+## Request
+
+```ts
+import { Request } from '@cc-heart/utils-client'
+
+const request = new Request('https://jsonplaceholder.typicode.com')
+
+const { data, abort } = request.get<{ name: string }>('/users/1')
+const user = await data // parsed JSON body
+
+abort.abort() // cancel in-flight request
+```
+
+- HTTP methods: `get` / `post` / `put` / `delete`
+- `GET` / `DELETE` bodies are serialized into the query string; `POST` / `PUT` bodies are sent as JSON
+- every call returns `{ data, abort }` — `abort` is an `AbortController`
+
+### Interceptors
+
+```ts
+request.interceptor.requestInterceptor.push((config) => {
+  // mutate request init before sending
+  return config
+})
+request.interceptor.responseInterceptor.push((res) => res)
+request.interceptor.errorInterceptor.push((err) => {
+  console.error(err)
+})
+```
+
+## createFetchRequest
+
+Curried helper that binds a `Request` instance into a one-call fetcher:
+
+```ts
+import { createFetchRequest } from '@cc-heart/utils-client'
+
+const useFetch = createFetchRequest(new Request('https://api.example.com'))
+const { data } = useFetch('/users/1', { method: 'GET' })
+```
+
+## Demo
+
+Fetch a user from JSONPlaceholder — pick an id and hit send:
+
+```tsx playground
+import { useMemo, useState } from 'react'
+import { Request, createFetchRequest } from '@cc-heart/utils-client'
+
+export default function App() {
+  const [id, setId] = useState(1)
+  const [log, setLog] = useState('')
+
+  const useFetch = useMemo(
+    () => createFetchRequest(new Request('https://jsonplaceholder.typicode.com')),
+    []
+  )
+
+  const send = async () => {
+    setLog('loading...')
+    const { data } = useFetch(`/users/${id}`)
+    try {
+      const user = await data
+      setLog(`✅ ${JSON.stringify({ id: user.id, name: user.name, email: user.email }, null, 2)}`)
+    } catch (e) {
+      setLog(`❌ ${e.message}`)
+    }
+  }
+
+  return (
+    <div style={{ fontFamily: 'monospace' }}>
+      <label>
+        user id:{' '}
+        <input
+          type="number"
+          min="1"
+          max="10"
+          value={id}
+          onChange={(e) => setId(Number(e.target.value))}
+        />
+      </label>{' '}
+      <button onClick={send}>send GET</button>
+      <pre>{log}</pre>
+    </div>
+  )
+}
+```

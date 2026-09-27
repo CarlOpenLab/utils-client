@@ -1,0 +1,60 @@
+# CSS
+
+BEM class name generator with CSS variable support.
+
+## generateCssNamespaceFn
+
+Curried factory: `generateCssNamespaceFn(prefix)(namespace)` returns a BEM helper set.
+
+```ts
+import { generateCssNamespaceFn } from '@cc-heart/utils-client'
+
+const ns = generateCssNamespaceFn('cc')('button')
+
+ns.b()            // 'cc-button'
+ns.b('primary')   // 'cc-button-primary'
+ns.e('icon')      // 'cc-button__icon'
+ns.m('disabled')  // 'cc-button--disabled'
+ns.bem('primary', 'icon', 'spin') // 'cc-button-primary__icon--spin'
+```
+
+### CSS variables
+
+```ts
+ns.genCssVar({ color: 'red', size: '14px' })
+// { '--cc-button-color': 'red', '--cc-button-size': '14px' }
+
+ns.getCssVar('color') // '--cc-button-color'
+```
+
+## Demo
+
+Type a block / element / modifier and see the generated BEM classes:
+
+```tsx playground
+import { useMemo, useState } from 'react'
+import { generateCssNamespaceFn } from '@cc-heart/utils-client'
+
+export default function App() {
+  const [block, setBlock] = useState('primary')
+  const [element, setElement] = useState('icon')
+  const [modifier, setModifier] = useState('disabled')
+
+  const ns = useMemo(() => generateCssNamespaceFn('cc')('button'), [])
+
+  return (
+    <div style={{ fontFamily: 'monospace', lineHeight: 2 }}>
+      <div>
+        block: <input value={block} onChange={(e) => setBlock(e.target.value)} />{' '}
+        element: <input value={element} onChange={(e) => setElement(e.target.value)} />{' '}
+        modifier: <input value={modifier} onChange={(e) => setModifier(e.target.value)} />
+      </div>
+      <div>b(<i>{block}</i>) → <b>{ns.b(block)}</b></div>
+      <div>e(<i>{element}</i>) → <b>{ns.e(element)}</b></div>
+      <div>m(<i>{modifier}</i>) → <b>{ns.m(modifier)}</b></div>
+      <div>bem(...) → <b>{ns.bem(block, element, modifier) || '(needs all three)'}</b></div>
+      <div>genCssVar → <b>{JSON.stringify(ns.genCssVar({ color: 'red' }))}</b></div>
+    </div>
+  )
+}
+```

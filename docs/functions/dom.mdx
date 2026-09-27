@@ -1,0 +1,90 @@
+# DOM
+
+DOM class and style helpers.
+
+## classNames
+
+Join conditional class names — strings, arrays, and `{ className: condition }` objects.
+
+```ts
+import { classNames } from '@cc-heart/utils-client'
+
+classNames('btn', ['btn-lg'], { 'is-active': true, 'is-hidden': false })
+// 'btn btn-lg is-active'
+```
+
+## addClassName / removeClassName
+
+Add or remove classes on an element.
+
+```ts
+addClassName(el, 'is-active')
+removeClassName(el, 'is-active')
+```
+
+## addStyles / removeStyles / getStyles
+
+Inline style helpers.
+
+```ts
+addStyles(el, { color: 'red', fontSize: '14px' })
+removeStyles(el, ['color'])
+getStyles(el, 'font-size') // '14px'
+```
+
+## getPadding
+
+Read the computed padding of an element as numbers.
+
+```ts
+getPadding(el) // { left: 0, right: 0, top: 8, bottom: 8 }
+```
+
+## isHidden
+
+Whether an element (or its content) takes no visible space.
+
+```ts
+isHidden(el) // boolean
+```
+
+## Demo
+
+Toggle the conditions and see `classNames` build the class string, then apply it live to the box:
+
+```tsx playground
+import { useState } from 'react'
+import { classNames } from '@cc-heart/utils-client'
+
+export default function App() {
+  const [active, setActive] = useState(true)
+  const [rounded, setRounded] = useState(false)
+
+  const cls = classNames('demo-box', { 'is-active': active, 'is-rounded': rounded })
+
+  return (
+    <div style={{ fontFamily: 'monospace', lineHeight: 2 }}>
+      <label>
+        <input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} /> is-active
+      </label>{' '}
+      <label>
+        <input type="checkbox" checked={rounded} onChange={(e) => setRounded(e.target.checked)} /> is-rounded
+      </label>
+      <div>classNames(...) → <b>"{cls}"</b></div>
+      <div
+        className={cls}
+        style={{
+          marginTop: 8,
+          padding: 16,
+          color: '#fff',
+          background: active ? '#42b883' : '#999',
+          borderRadius: rounded ? 12 : 0,
+          transition: 'all .3s',
+        }}
+      >
+        {cls}
+      </div>
+    </div>
+  )
+}
+```

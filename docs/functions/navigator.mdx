@@ -1,0 +1,48 @@
+# Navigator
+
+Browser navigator helpers.
+
+## copyTextToClipboard
+
+Copy text to the clipboard. Returns a promise that resolves when the text is copied.
+
+```ts
+import { copyTextToClipboard } from '@cc-heart/utils-client'
+
+await copyTextToClipboard('hello')
+```
+
+## Demo
+
+Type something and copy it:
+
+```tsx playground
+import { useState } from 'react'
+import { copyTextToClipboard } from '@cc-heart/utils-client'
+
+export default function App() {
+  const [text, setText] = useState('hello utils-client')
+  const [status, setStatus] = useState('')
+
+  const copy = async () => {
+    try {
+      await copyTextToClipboard(text)
+      setStatus('✅ copied! paste anywhere to verify')
+    } catch (e) {
+      setStatus(`❌ ${e.message}`)
+    }
+  }
+
+  return (
+    <div style={{ fontFamily: 'monospace', lineHeight: 2 }}>
+      <input value={text} onChange={(e) => setText(e.target.value)} style={{ width: 260 }} />{' '}
+      <button onClick={copy}>copy</button>
+      <div>{status}</div>
+    </div>
+  )
+}
+```
+
+:::tip
+Clipboard access requires a secure context (HTTPS or localhost) and a user gesture — the demo button satisfies both.
+:::
